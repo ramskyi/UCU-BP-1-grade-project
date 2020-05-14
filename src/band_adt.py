@@ -37,8 +37,6 @@ class BandsStatusesCollection:
     Methods:
     + __init__(): NoneType
         Initialization
-    + (static) incr_in_dict(tuple, dict): NoneType
-        Increment by one in dict
     + add(int): bool
         Adds data about band given by id to class object
     """
@@ -55,8 +53,8 @@ class BandsStatusesCollection:
     def add(self, id_):
         """(int) -> NoneType
         Recalculates data considering new band with given id. Returns
-        False if there is no band with such id or response from site
-        took more then 2 seconds, True otherwise
+        False if there is no band with such id or no data for a band
+        with such id, True otherwise
         """
         band = metallum.band_for_id(str(id_))
 
@@ -71,8 +69,13 @@ class BandsStatusesCollection:
         status = band.status
 
         # Collecting data on genres of the band
+        genres_count = 0
         for curr_genre in band.genres:
-            _incr_in_dict((status, curr_genre), self.genre)
+            curr_genre = curr_genre.split('/')
+            for genre in curr_genre:
+                genres_count += 1
+                _incr_in_dict((status, genre), self.genre)
+        _incr_in_dict((status, genres_count), self.genres_count)
 
         # Collecting data in songs duration mean and count of songs per
         # one album mean
@@ -86,9 +89,6 @@ class BandsStatusesCollection:
         _incr_in_dict((status, summary_duration / tracks_count),
                       self.songs_duration)
 
-        # Collecting data on count of genres of band
-        _incr_in_dict((status, len(band.genres)), self.genres_count)
-
         # Collecting data on country of band's origin
         _incr_in_dict((status, band.country), self.country)
         
@@ -97,9 +97,39 @@ class BandsStatusesCollection:
 
 class BandsSongsFrequencyCollection:
     """
+    Represents ADT that stores quotient of the count of bands with
+    specific characteristics and its frequency of songs producing.
 
+    Attributes:
+    + self.time_of_existence: dict((float, int), int)
+        Stores count of bands with certain frequency of songs
+        production and certain count of years since origin
+    + self.genre: dict((float, str), int)
+        Stores count of bands with certain frequency of songs
+        production and certain genre
+    + self.genres_count: dict((float, int), int)
+        Stores count of bands with certain frequency of songs
+        production and certain count of genres
+    + self.country: dict((float, str), int)
+        Stores Stores count of bands with certain frequency of songs
+        production and certain country of origin
+    + self.song_duration_mean: dict((float, float), int)
+        Stores count of bands with certain frequency of songs
+        production and certain mean of songs duration
+    + self.label: dict((float, bool), int)
+        Stores count of bands with certain frequency of songs
+        production and which have label or don't
+
+    Methods:
+    + __init__(): NoneType
+        Initialization
+    + add(int): bool
+        Adds data about band given by id to class object
     """
+
     def __init__(self):
+        """() -> NoneType
+        """
         self.time_of_existence = {}
         self.genre = {}
         self.genres_count = {}
@@ -108,7 +138,19 @@ class BandsSongsFrequencyCollection:
         self.label = {}
 
     def add(self, id_):
+        """(int) -> NoneType
+        Recalculates data considering new band with given id. Returns
+        False if there is no band with such id or no data for a band
+        with such id, True otherwise
+        """
         band = metallum.band_for_id(str(id_))
+        if str(band) == '<Band: >' or band.genres == [''] or \
+                band.country == '' or band.label == '':
+            return False
+        try:
+            albums = band.albums
+        except TypeError:
+            return False
         time_of_exis = 2020 - int(band.formed_in)
 
         # How many songs produced a band
@@ -122,9 +164,13 @@ class BandsSongsFrequencyCollection:
         _incr_in_dict((freq, time_of_exis), self.time_of_existence)
 
         # Collecting data on genres
-        for genre in band.genres:
-            _incr_in_dict((freq, genre), self.genre)
-        _incr_in_dict((freq, len(band.genres)), self.genres_count)
+        genres_count = 0
+        for curr_genre in band.genres:
+            curr_genre = curr_genre.split('/')
+            for genre in curr_genre:
+                genres_count += 1
+                _incr_in_dict((freq, genre), self.genre)
+        _incr_in_dict((freq, genres_count), self.genres_count)
 
         # Collecting data on country
         _incr_in_dict((freq, band.country), self.country)
@@ -139,4 +185,8 @@ class BandsSongsFrequencyCollection:
         _incr_in_dict((freq, mean), self.song_duration_mean)
 
         # Collecting data on band label
-        _incr_in_dict((freq, band.label))
+        signed_to_label = 'unsigned' not in band.label.lower() and \
+            'independent' not in band.label.lower()
+        _incr_in_dict((freq, signed_to_label), self.label)
+
+        return True

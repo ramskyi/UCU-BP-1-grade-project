@@ -9,7 +9,9 @@ band = metallum.Band(
     'bands/' +
     'random_string_to_show_it_works_by_just_by_id_as_well/3540375286')
 print(band)
-band = metallum.band_for_id('3540375286')
+# band = metallum.band_for_id('3540375286')
+band = metallum.band_for_id('3540442600')
+
 print(band)
 
 print('band id:', band.id)
