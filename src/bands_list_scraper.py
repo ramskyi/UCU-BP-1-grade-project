@@ -25,8 +25,8 @@ def band_urls_list(page_source):
     return matches
 
 
-def main():
-    out_file = open('band_url_list.txt', 'w')
+def scrape_band_list():
+    out_file = open('/band_url_list.txt', 'w')
     driver = webdriver.Firefox()
     for letter in letters:
         driver.get(base_url + letter)
@@ -44,6 +44,3 @@ def main():
                 time.sleep(3)
 
     out_file.close()
-
-if __name__ == '__main__':
-    main()
