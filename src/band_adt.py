@@ -101,22 +101,22 @@ class BandsSongsFrequencyCollection:
     specific characteristics and its frequency of songs producing.
 
     Attributes:
-    + self.time_of_existence: dict((float, int), int)
+    + time_of_existence: dict((float, int), int)
         Stores count of bands with certain frequency of songs
         production and certain count of years since origin
-    + self.genre: dict((float, str), int)
+    + genre: dict((float, str), int)
         Stores count of bands with certain frequency of songs
         production and certain genre
-    + self.genres_count: dict((float, int), int)
+    + genres_count: dict((float, int), int)
         Stores count of bands with certain frequency of songs
         production and certain count of genres
-    + self.country: dict((float, str), int)
+    + country: dict((float, str), int)
         Stores Stores count of bands with certain frequency of songs
         production and certain country of origin
-    + self.song_duration_mean: dict((float, float), int)
+    + song_duration_mean: dict((float, float), int)
         Stores count of bands with certain frequency of songs
         production and certain mean of songs duration
-    + self.label: dict((float, bool), int)
+    + label: dict((float, bool), int)
         Stores count of bands with certain frequency of songs
         production and which have label or don't
 
