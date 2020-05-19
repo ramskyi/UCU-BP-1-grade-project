@@ -1,8 +1,13 @@
 import re
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 
 def line_to_dict(line, index1_type, index2_type):
+    """
+    Takes a string which represents a dict, fixes data from line and
+    returns back a dict.
+    """
     dct = {}
     pattern = re.compile('\([^:]*, [^:]*\): \d*')
     data = re.findall(pattern, line)
@@ -47,16 +52,27 @@ def line_to_dict(line, index1_type, index2_type):
 
 
 def plot_lists_genre_or_country(genre_info, most_popular_genres, status):
+    """
+    Takes a dict with data about band (about countries of genres), list
+    of genres/countries sorted by descending count of bands with that
+    property, and status of bands with such data. Returns lists for
+    building a bar chart.
+    """
     most_status_genre = sorted(
         [(genre_info[most_popular_genres[i][1]][status],
          '\n'.join(most_popular_genres[i][1].split())) for i in range(25)])
     plot_y = [most_status_genre[i][0] for i in range(25)]
-    plot_x = [most_status_genre[i][1] + '\n' + str(plot_y[i])[:4] + '%'
+    plot_x = [most_status_genre[i][1] + '\n' + str(plot_y[i])[:4]
               for i in range(25)]
     return plot_x, plot_y
 
 
 def visualize_genre_or_country(dct, code='genres'):
+    """
+    Takes dict of data about genres or countries and code (to visualize
+    genres or countries data). Builds and shows bar charts for each
+    status from it.
+    """
     genre_info = {}
     most_popular_genres = []
     for genre in dct['Active']:
@@ -89,6 +105,10 @@ def visualize_genre_or_country(dct, code='genres'):
 
 
 def visualize_duration(duration_dct):
+    """
+    Takes dict of data about mean of song duration for bands.
+    Builds and show bar charts for each status from it.
+    """
     int_duration_dct = {}
 
     for status in duration_dct:
@@ -110,6 +130,10 @@ def visualize_duration(duration_dct):
 
 
 def visualize_genres_count(genres_count_dct_dct):
+    """
+    Takes dict of data about count of genres for a band.
+    Builds and show bar charts for each status from it.
+    """
     genres_count_list_dct = {'Total': [0]*8}
     for status in genres_count_dct_dct:
         if status not in genres_count_list_dct:
@@ -132,7 +156,7 @@ def visualize_genres_count(genres_count_dct_dct):
 
     for status in 'Active', 'Split-up', 'Changed name', 'Unknown', 'On hold':
         func = lambda x: str(x) + '\n' + str(
-            genres_count_list_dct[status][x][1])[:4] + '%\n' + \
+            genres_count_list_dct[status][x][1])[:4] + '\n' + \
             str(genres_count_list_dct[status][x][0])[:4]
         plot_x = list(map(func, range(8)))
         plot_y = [genres_count_list_dct[status][x][1] for x in range(8)]
@@ -144,6 +168,10 @@ def visualize_genres_count(genres_count_dct_dct):
 
 
 def visualize_per_album(songs_per_album):
+    """
+    Takes dict of data about count of songs per an album for a band.
+    Builds and show plots for each status from it.
+    """
     songs_per_album['Total'] = {}
     for status in songs_per_album:
         for cnt in songs_per_album[status]:
@@ -170,7 +198,10 @@ def visualize_per_album(songs_per_album):
 
 
 def draw_all():
-    with open('status_result', 'r') as file:
+    """() -> NoneType
+    Draws plots and bar charts to visualize collected data.
+    """
+    with open(Path('..') / 'polygon' / 'status_result', 'r') as file:
         lines = file.readlines()
         genre = line_to_dict(lines[0], str, str)
         visualize_genre_or_country(genre)

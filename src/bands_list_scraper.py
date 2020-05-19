@@ -1,6 +1,7 @@
 from selenium import webdriver
 import time
 import re
+from pathlib import Path
 
 
 base_url = 'https://www.metal-archives.com/lists/'
@@ -8,6 +9,10 @@ letters = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z NBR ~'.split()
 
 
 def chunks_count(page_source):
+    """
+    Takes source code and returns count of chunks of band entries
+    considering there no more than 500 entries per chunk.
+    """
     # Example: "Showing 1 to 500 of 11,839 entries"
     pattern = re.compile('Showing .* entries')
     matches = re.findall(pattern, page_source)
@@ -17,6 +22,9 @@ def chunks_count(page_source):
 
 
 def band_urls_list(page_source):
+    """
+    Forms and returns a list of urls of bands, taking a page source.
+    """
     pattern = re.compile(
         '<a href="https://www\.metal-archives\.com/bands/[^<>]*>')
     matches = re.findall(pattern, page_source)
@@ -26,7 +34,12 @@ def band_urls_list(page_source):
 
 
 def scrape_band_list():
-    out_file = open('/band_url_list.txt', 'w')
+    """
+    Scrapes all bands urls from www.metal-archives.com and writes them
+    out in polygon/band_url_list.txt
+    :return:
+    """
+    out_file = open(Path('..') / 'polygon' / 'band_url_list.txt', 'w')
     driver = webdriver.Firefox()
     for letter in letters:
         driver.get(base_url + letter)

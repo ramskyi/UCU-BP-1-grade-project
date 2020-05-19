@@ -8,8 +8,9 @@ Takes no inputs, outputs are plots and bar charts, generated using matplotlib.py
 
 ## Program structure:
 band_list_scraper.py - scrapes the list of all bands on www.metal-archives.com . Stores their urls in band_url_list.txt
-band_adt - classes, used to get band data from site.
-
+band_adt.py - classes, used to get band data from site.
+collector.py - uses band_adt.py and gets data by band ids.
+status_analysis.py - draws plots and bar charts to visualize collected data
 
 ## Requirements:
 Last versions of Selenium, Firefox (as driver for Selenium), Python-Metallum, Matplotlib.
@@ -26,4 +27,5 @@ Run main.py.
 Not allowed.
 
 ## License
-None
+MIT
+
