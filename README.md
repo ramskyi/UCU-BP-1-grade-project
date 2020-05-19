@@ -28,4 +28,7 @@ Not allowed.
 
 ## License
 MIT
+<<<<<<< HEAD
 
+=======
+>>>>>>> deb5aaa9be4483e7ef82f81b38d730192453688e
