@@ -26,4 +26,4 @@ Run main.py.
 Not allowed.
 
 ## License
-None
+MIT
